@@ -32,10 +32,9 @@ use OCP\Group\Backend\ICountUsersBackend;
 use OCP\Group\Backend\IGroupDetailsBackend;
 use OCP\Group\Backend\IIsAdminBackend;
 use OCP\Group\Backend\ISearchableGroupBackend;
-use OCP\ILogger;
 use OCP\IUserManager;
-
-use OC\User\LazyUser;
+use OCP\User\LazyUser;
+use Psr\Log\LoggerInterface;
 
 /**
  * The SQL group backend manager.
@@ -55,7 +54,7 @@ final class GroupBackend extends ABackend implements
      */
     private $appName;
     /**
-     * @var ILogger The logger instance.
+     * @var LoggerInterface The logger instance.
      */
     private $logger;
     /**
@@ -70,20 +69,26 @@ final class GroupBackend extends ABackend implements
      * @var Properties The properties array.
      */
     private $properties;
+    /**
+     * @var IUserManager The user manager.
+     */
+    private $userManager;
 
     /**
      * The default constructor.
      *
      * @param string          $AppName         The application name.
      * @param Cache           $cache           The cache instance.
-     * @param ILogger         $logger          The logger instance.
+     * @param LoggerInterface $logger          The logger instance.
      * @param Properties      $properties      The properties array.
      * @param GroupRepository $groupRepository The group repository.
+     * @param IUserManager    $userManager     The user manager.
      */
     public function __construct(
-        $AppName, Cache $cache, ILogger $logger, Properties $properties,
-        GroupRepository $groupRepository
+        $AppName, Cache $cache, LoggerInterface $logger, Properties $properties,
+        GroupRepository $groupRepository, IUserManager $userManager
     ) {
+        $this->userManager = $userManager;
         $this->appName = $AppName;
         $this->cache = $cache;
         $this->logger = $logger;
@@ -424,9 +429,8 @@ final class GroupBackend extends ABackend implements
         }
 
 		$users = [];
-		$userManager = \OCP\Server::get(IUserManager::class);
 		foreach ($names as $uid => $name) {
-			$users[$uid] = new LazyUser($uid, $userManager, $name);
+			$users[$uid] = new LazyUser($uid, $this->userManager, $name);
 		}
 
 		return $users;

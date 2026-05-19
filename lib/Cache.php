@@ -25,8 +25,9 @@ use OC\Memcache\NullCache;
 use OCA\UserSQL\Constant\App;
 use OCA\UserSQL\Constant\Opt;
 use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IConfig;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Used to store key-value pairs in the cache memory.
@@ -44,13 +45,15 @@ class Cache
     /**
      * The default constructor. Initiates the cache memory.
      *
-     * @param string  $AppName The application name.
-     * @param IConfig $config  The config instance.
-     * @param ILogger $logger  The logger instance.
+     * @param string          $AppName The application name.
+     * @param IConfig         $config  The config instance.
+     * @param LoggerInterface $logger  The logger instance.
+     * @param ICacheFactory   $factory The cache factory.
      */
-    public function __construct($AppName, IConfig $config, ILogger $logger)
-    {
-        $factory = \OC::$server->getMemCacheFactory();
+    public function __construct(
+        $AppName, IConfig $config, LoggerInterface $logger,
+        ICacheFactory $factory
+    ) {
         $useCache = $config->getAppValue(
             $AppName, Opt::USE_CACHE, App::FALSE_VALUE
         );

@@ -37,7 +37,7 @@ use OCA\UserSQL\Repository\UserRepository;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IConfig;
 use OCP\IL10N;
-use OCP\ILogger;
+use OCP\IUserManager;
 use OCP\Security\Events\ValidatePasswordPolicyEvent;
 use OCP\User\Backend\ABackend;
 use OCP\User\Backend\ICheckPasswordBackend;
@@ -48,6 +48,7 @@ use OCP\User\Backend\IPasswordConfirmationBackend;
 use OCP\User\Backend\IProvideAvatarBackend;
 use OCP\User\Backend\ISetDisplayNameBackend;
 use OCP\User\Backend\ISetPasswordBackend;
+use Psr\Log\LoggerInterface;
 
 /**
  * The SQL user backend manager.
@@ -69,7 +70,7 @@ final class UserBackend extends ABackend implements
      */
     private $appName;
     /**
-     * @var ILogger The logger instance.
+     * @var LoggerInterface The logger instance.
      */
     private $logger;
     /**
@@ -97,6 +98,10 @@ final class UserBackend extends ABackend implements
      */
     private $eventDispatcher;
     /**
+     * @var IUserManager The user manager.
+     */
+    private $userManager;
+    /**
      * @var IUserAction[] The actions to execute.
      */
     private $actions;
@@ -106,17 +111,18 @@ final class UserBackend extends ABackend implements
      *
      * @param string           $AppName         The application name.
      * @param Cache            $cache           The cache instance.
-     * @param ILogger          $logger          The logger instance.
+     * @param LoggerInterface  $logger          The logger instance.
      * @param Properties       $properties      The properties array.
      * @param UserRepository   $userRepository  The user repository.
      * @param IL10N            $localization    The localization service.
      * @param IConfig          $config          The config instance.
      * @param IEventDispatcher $eventDispatcher The event dispatcher.
+     * @param IUserManager     $userManager     The user manager.
      */
     public function __construct(
-        $AppName, Cache $cache, ILogger $logger, Properties $properties,
+        $AppName, Cache $cache, LoggerInterface $logger, Properties $properties,
         UserRepository $userRepository, IL10N $localization, IConfig $config,
-        IEventDispatcher $eventDispatcher
+        IEventDispatcher $eventDispatcher, IUserManager $userManager
     ) {
         $this->appName = $AppName;
         $this->cache = $cache;
@@ -126,6 +132,7 @@ final class UserBackend extends ABackend implements
         $this->localization = $localization;
         $this->config = $config;
         $this->eventDispatcher = $eventDispatcher;
+        $this->userManager = $userManager;
         $this->actions = [];
 
         $this->initActions();
@@ -141,7 +148,7 @@ final class UserBackend extends ABackend implements
         ) {
             $this->actions[] = new EmailSync(
                 $this->appName, $this->logger, $this->properties, $this->config,
-                $this->userRepository
+                $this->userRepository, $this->userManager
             );
         }
         if (!empty($this->properties[Opt::QUOTA_SYNC])
@@ -157,7 +164,7 @@ final class UserBackend extends ABackend implements
         ) {
             $this->actions[] = new NameSync(
                 $this->appName, $this->logger, $this->properties, $this->config,
-                $this->userRepository
+                $this->userRepository, $this->userManager
             );
         }
     }

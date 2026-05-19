@@ -25,10 +25,11 @@ use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Exception as DBALException;
 use OC\DB\Connection;
 use OC\DB\ConnectionFactory;
+use OC\SystemConfig;
 use OCA\UserSQL\Constant\DB;
 use OCA\UserSQL\Constant\Query;
 use OCA\UserSQL\Properties;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Used to query a database.
@@ -42,7 +43,7 @@ class DataQuery
      */
     private $appName;
     /**
-     * @var ILogger The logger instance.
+     * @var LoggerInterface The logger instance.
      */
     private $logger;
     /**
@@ -54,6 +55,10 @@ class DataQuery
      */
     private $queryProvider;
     /**
+     * @var SystemConfig The system config.
+     */
+    private $systemConfig;
+    /**
      * @var Connection The database connection.
      */
     private $connection;
@@ -61,19 +66,21 @@ class DataQuery
     /**
      * The class constructor.
      *
-     * @param string        $AppName       The application name.
-     * @param ILogger       $logger        The logger instance.
-     * @param Properties    $properties    The properties array.
-     * @param QueryProvider $queryProvider The query provider.
+     * @param string          $AppName       The application name.
+     * @param LoggerInterface $logger        The logger instance.
+     * @param Properties      $properties    The properties array.
+     * @param QueryProvider   $queryProvider The query provider.
+     * @param SystemConfig    $systemConfig  The system config.
      */
     public function __construct(
-        $AppName, ILogger $logger, Properties $properties,
-        QueryProvider $queryProvider
+        $AppName, LoggerInterface $logger, Properties $properties,
+        QueryProvider $queryProvider, SystemConfig $systemConfig
     ) {
         $this->appName = $AppName;
         $this->logger = $logger;
         $this->properties = $properties;
         $this->queryProvider = $queryProvider;
+        $this->systemConfig = $systemConfig;
         $this->connection = false;
     }
 
@@ -112,10 +119,11 @@ class DataQuery
 
         try {
             $result = $this->connection->prepare($query, $limit, $offset);
-        } catch (DBALException  $exception) {
-            $this->logger->logException(
-				$exception, [ 'message' => "Could not prepare the query: " . $query ]
-			);
+        } catch (DBALException $exception) {
+            $this->logger->error(
+                "Could not prepare the query: " . $query,
+                ["app" => $this->appName, "exception" => $exception]
+            );
             return false;
         }
 
@@ -129,10 +137,11 @@ class DataQuery
             $result = $result->execute();
             return $result;
 
-        } catch (DBALException  $exception) {
-            $this->logger->logException(
-				$exception, [ 'message' => "Could not execute the query: " . $query ]
-			);
+        } catch (DBALException $exception) {
+            $this->logger->error(
+                "Could not execute the query: " . $query,
+                ["app" => $this->appName, "exception" => $exception]
+            );
             return false;
         }
     }
@@ -142,9 +151,7 @@ class DataQuery
      */
     private function connectToDatabase()
     {
-        $connectionFactory = new ConnectionFactory(
-            \OC::$server->getSystemConfig()
-        );
+        $connectionFactory = new ConnectionFactory($this->systemConfig);
 
         $parameters = array(
             "host" => $this->properties[DB::HOSTNAME],

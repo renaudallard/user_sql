@@ -27,7 +27,8 @@ use OCA\UserSQL\Model\User;
 use OCA\UserSQL\Properties;
 use OCA\UserSQL\Repository\UserRepository;
 use OCP\IConfig;
-use OCP\ILogger;
+use OCP\IUserManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * Synchronizes the user name.
@@ -41,7 +42,7 @@ class NameSync implements IUserAction
      */
     private $appName;
     /**
-     * @var ILogger The logger instance.
+     * @var LoggerInterface The logger instance.
      */
     private $logger;
     /**
@@ -56,25 +57,32 @@ class NameSync implements IUserAction
      * @var UserRepository The user repository.
      */
     private $userRepository;
+    /**
+     * @var IUserManager The user manager.
+     */
+    private $userManager;
 
     /**
      * The default constructor.
      *
-     * @param string         $appName        The application name.
-     * @param ILogger        $logger         The logger instance.
-     * @param Properties     $properties     The properties array.
-     * @param IConfig        $config         The config instance.
-     * @param UserRepository $userRepository The user repository.
+     * @param string          $appName        The application name.
+     * @param LoggerInterface $logger         The logger instance.
+     * @param Properties      $properties     The properties array.
+     * @param IConfig         $config         The config instance.
+     * @param UserRepository  $userRepository The user repository.
+     * @param IUserManager    $userManager    The user manager.
      */
     public function __construct(
-        $appName, ILogger $logger, Properties $properties, IConfig $config,
-        UserRepository $userRepository
+        $appName, LoggerInterface $logger, Properties $properties,
+        IConfig $config, UserRepository $userRepository,
+        IUserManager $userManager
     ) {
         $this->appName = $appName;
         $this->logger = $logger;
         $this->properties = $properties;
         $this->config = $config;
         $this->userRepository = $userRepository;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -99,7 +107,7 @@ class NameSync implements IUserAction
                 $this->config->setUserValue(
                     $user->uid, "settings", "displayName", $user->name
                 );
-                \OC::$server->getUserManager()->get($user->uid)->setDisplayName($user->name);
+                $this->userManager->get($user->uid)->setDisplayName($user->name);
             }
 
             $result = true;
@@ -121,7 +129,7 @@ class NameSync implements IUserAction
                 $this->config->setUserValue(
                     $user->uid, "settings", "displayName", $user->name
                 );
-                \OC::$server->getUserManager()->get($user->uid)->setDisplayName($user->name);
+                $this->userManager->get($user->uid)->setDisplayName($user->name);
             }
 
             $result = true;
