@@ -287,12 +287,8 @@ final class UserBackend extends ABackend implements
 
         $user = $this->getUser($uid);
 
-        if (!($user instanceof User)) {
-            return false;
-        }
-
-        if (is_null($user->name)) {
-            return false;
+        if (!($user instanceof User) || is_null($user->name)) {
+            return (string)$uid;
         }
 
         $name = $user->name;
@@ -530,7 +526,7 @@ final class UserBackend extends ABackend implements
         }
 
         $passwordAlgorithm = $this->getPasswordAlgorithm();
-        if ($passwordAlgorithm === false) {
+        if ($passwordAlgorithm === null) {
             return false;
         }
 
@@ -620,7 +616,7 @@ final class UserBackend extends ABackend implements
             return false;
         }
 
-        $avatar = $user->avatar;
+        $avatar = (bool)$user->avatar;
         $this->logger->debug(
             "Returning canChangeAvatar($uid): " . ($avatar ? "true"
                 : "false"), ["app" => $this->appName]
