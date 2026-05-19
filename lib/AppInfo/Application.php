@@ -21,47 +21,60 @@
 
 namespace OCA\UserSQL\AppInfo;
 
+use OCA\UserSQL\Backend\GroupBackend;
+use OCA\UserSQL\Backend\UserBackend;
 use OCP\AppFramework\App;
-use OCP\AppFramework\QueryException;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\IGroupManager;
+use OCP\IUserManager;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * The application bootstrap class.
  *
  * @author Marcin Łojewski <dev@mlojewski.me>
  */
-class Application extends App
+class Application extends App implements IBootstrap
 {
-    /**
-     * The class constructor.
-     *
-     * @param array $urlParams An array with variables extracted
-     *                         from the routes.
-     */
-    public function __construct(array $urlParams = array())
+    public const APP_ID = "user_sql";
+
+    public function __construct(array $urlParams = [])
     {
-        parent::__construct("user_sql", $urlParams);
+        parent::__construct(self::APP_ID, $urlParams);
     }
 
-    /**
-     * Register the application backends
-     * if all necessary configuration is provided.
-     *
-     * @throws QueryException If the query container's could not be resolved
-     */
-    public function registerBackends()
+    public function register(IRegistrationContext $context): void
     {
-        $userBackend = $this->getContainer()->query(
-            '\OCA\UserSQL\Backend\UserBackend'
-        );
-        $groupBackend = $this->getContainer()->query(
-            '\OCA\UserSQL\Backend\GroupBackend'
-        );
+    }
 
-        if ($userBackend->isConfigured()) {
-            \OC::$server->getUserManager()->registerBackend($userBackend);
-        }
-        if ($groupBackend->isConfigured()) {
-            \OC::$server->getGroupManager()->addBackend($groupBackend);
+    public function boot(IBootContext $context): void
+    {
+        try {
+            $appContainer = $context->getAppContainer();
+            $serverContainer = $context->getServerContainer();
+
+            $userBackend = $appContainer->get(UserBackend::class);
+            if ($userBackend->isConfigured()) {
+                $serverContainer->get(IUserManager::class)
+                    ->registerBackend($userBackend);
+            }
+
+            $groupBackend = $appContainer->get(GroupBackend::class);
+            if ($groupBackend->isConfigured()) {
+                $serverContainer->get(IGroupManager::class)
+                    ->addBackend($groupBackend);
+            }
+        } catch (Throwable $exception) {
+            $context->getServerContainer()
+                ->get(LoggerInterface::class)
+                ->error(
+                    "Failed to register user_sql backends: "
+                    . $exception->getMessage(),
+                    ["app" => self::APP_ID, "exception" => $exception]
+                );
         }
     }
 }
