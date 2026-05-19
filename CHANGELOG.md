@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - App bootstrap moved from `appinfo/app.php` to `IBootstrap`
 ### Fixed
 - Silent login failure on Nextcloud 30+ caused by the removal of `OCP\ILogger`; migrated to `Psr\Log\LoggerInterface`
+- 500 error on every routed request under Nextcloud 32: `appinfo/routes.php` now returns the route array instead of calling the removed `App::registerRoutes()`
 - TypeError in `UserBackend::getDisplayName()` returning `false` from a `: string`-typed method
 - TypeError in `UserBackend::canChangeAvatar()` returning a non-bool
 
