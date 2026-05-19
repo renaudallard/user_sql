@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.7.2]
+### Changed
+- Support for Nextcloud 30, 31, 32; drop Nextcloud 25-29
+- Minimum PHP version raised to 8.1 (Nextcloud 30+ requirement)
+- App bootstrap moved from `appinfo/app.php` to `IBootstrap`
+### Fixed
+- Silent login failure on Nextcloud 30+ caused by the removal of `OCP\ILogger`; migrated to `Psr\Log\LoggerInterface`
+- TypeError in `UserBackend::getDisplayName()` returning `false` from a `: string`-typed method
+- TypeError in `UserBackend::canChangeAvatar()` returning a non-bool
+
 ## [4.7.1]
 - Support for Nextcloud 22, 23
 
@@ -163,6 +173,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Supported version of ownCloud, Nextcloud: ownCloud 10, Nextcloud 12
 
+[4.7.2]: https://github.com/nextcloud/user_sql/compare/v4.7.1...v4.7.2
 [4.7.1]: https://github.com/nextcloud/user_sql/compare/v4.7.0...v4.7.1
 [4.7.0]: https://github.com/nextcloud/user_sql/compare/v4.6.0...v4.7.0
 [4.6.0]: https://github.com/nextcloud/user_sql/compare/v4.5.0...v4.6.0
