@@ -47,7 +47,11 @@ class Drupal7 extends Phpass
      */
     protected function crypt($password, $setting)
     {
-        return substr(parent::crypt($password, $setting), 0, self::DRUPAL_HASH_LENGTH);
+        $hash = parent::crypt($password, $setting);
+        if ($hash === null) {
+            return null;
+        }
+        return substr($hash, 0, self::DRUPAL_HASH_LENGTH);
     }
 
     /**

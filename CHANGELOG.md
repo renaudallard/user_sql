@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fatal TypeError on PHP 8.4 when verifying a password with the `MD5(MD5+Salt)`, `MyBB` or `Redmine` algorithm and a null salt; `AbstractAlgorithm::checkPassword` now bails out cleanly if `getPasswordHash` does not return a string
 - Per-entity cache pre-warm in `getUsers` and `getGroups` wrote to a different key than the per-entity readers in `getUser` and `getGroup` used, so the warm-up was effectively dead code
+- PHP 8.1+ deprecation in `Drupal7::crypt` when the parent returned null for a malformed setting
 
 ## [4.7.3]
 ### Fixed
