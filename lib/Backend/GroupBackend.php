@@ -439,13 +439,13 @@ final class GroupBackend extends ABackend implements
     /**
      * @inheritdoc
      */
-    public function isAdmin(string $uid = null): bool
+    public function isAdmin(string $uid): bool
     {
         $this->logger->debug(
             "Entering isAdmin($uid)", ["app" => $this->appName]
         );
 
-        if (empty($this->properties[DB::GROUP_ADMIN_COLUMN]) || $uid === null) {
+        if (empty($this->properties[DB::GROUP_ADMIN_COLUMN])) {
             return false;
         }
 
