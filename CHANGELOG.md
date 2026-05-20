@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Per-entity cache pre-warm in `getUsers` and `getGroups` wrote to a different key than the per-entity readers in `getUser` and `getGroup` used, so the warm-up was effectively dead code
 - PHP 8.1+ deprecation in `Drupal7::crypt` when the parent returned null for a malformed setting
 - Uninitialized string offset warning in `Phpass::crypt` when the stored hash was shorter than 12 characters
+- `PlatformFactory` no longer relies on `Driver::getName()`, which was removed in Doctrine DBAL 4; the driver is now read from the connection parameters
 
 ## [4.7.3]
 ### Fixed

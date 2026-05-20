@@ -39,15 +39,16 @@ class PlatformFactory
      */
     public static function getPlatform(Connection $connection)
     {
-        switch ($connection->getDriver()->getName()) {
+        $params = $connection->getParams();
+        $driver = $params["driver"] ?? "";
+        switch ($driver) {
         case "pdo_mysql":
             return new MySQLPlatform($connection);
         case "pdo_pgsql":
             return new PostgreSQLPlatform($connection);
         default:
             throw new \InvalidArgumentException(
-                "Unknown database driver: " . $connection->getDriver()->getName(
-                )
+                "Unknown database driver: " . $driver
             );
         }
     }
