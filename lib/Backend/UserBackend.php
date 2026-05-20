@@ -251,6 +251,14 @@ final class UserBackend extends ABackend implements
         $cachedUser = $this->cache->get($cacheKey);
 
         if (!is_null($cachedUser)) {
+            if ($cachedUser === false) {
+                $this->logger->debug(
+                    "Found null user in cache: $uid",
+                    ["app" => $this->appName]
+                );
+                return null;
+            }
+
             $user = new User();
             foreach ($cachedUser as $key => $value) {
                 $user->{$key} = $value;
@@ -271,6 +279,8 @@ final class UserBackend extends ABackend implements
             foreach ($this->actions as $action) {
                 $action->doAction($user);
             }
+        } elseif (is_null($user)) {
+            $this->cache->set($cacheKey, false);
         }
 
         return $user;
