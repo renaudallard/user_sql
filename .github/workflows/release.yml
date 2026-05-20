@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tag
+        uses: actions/checkout@v4
+
+      - name: Verify info.xml matches the tag
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          expected="${tag#v}"
+          actual=$(grep -oP '(?<=<version>)[^<]+' appinfo/info.xml)
+          if [ "$actual" != "$expected" ]; then
+            echo "Version mismatch: tag=${tag} but appinfo/info.xml=${actual}" >&2
+            exit 1
+          fi
+
+      - name: Build zip asset
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          version="${tag#v}"
+          git archive --format=zip --prefix=user_sql/ -o "user_sql-${version}.zip" "${tag}"
+
+      - name: Extract CHANGELOG section for this version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v ver="${version}" '
+            $0 ~ "^## \\["ver"\\]" { found=1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "No CHANGELOG section for ${version}" >&2
+            exit 1
+          fi
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          version="${tag#v}"
+          gh release create "${tag}" \
+            --title "${tag}" \
+            --notes-file release-notes.md \
+            "user_sql-${version}.zip"
