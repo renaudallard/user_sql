@@ -309,7 +309,11 @@ class SettingsController extends Controller
                 }
                 break;
             case IntParam::TYPE:
-                if ($reqParam < $cryptoParam->min || $reqParam > $cryptoParam->max) {
+                if (!is_numeric($reqParam)) {
+                    return false;
+                }
+                $value = (int)$reqParam;
+                if ($value < $cryptoParam->min || $value > $cryptoParam->max) {
                     return false;
                 }
                 break;
