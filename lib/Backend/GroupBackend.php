@@ -145,7 +145,7 @@ final class GroupBackend extends ABackend implements
         }
 
         foreach ($groups as $group) {
-            $this->cache->set("group_" . $group->gid, $group);
+            $this->cache->set(self::class . "group_" . $group->gid, $group);
         }
 
         $groups = array_map(

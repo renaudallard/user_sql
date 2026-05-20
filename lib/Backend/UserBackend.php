@@ -477,7 +477,7 @@ final class UserBackend extends ABackend implements
             }
 
             foreach ($cachedUsers as $user) {
-                $this->cache->set("user_" . $user->uid, $user);
+                $this->cache->set(self::class . "user_" . $user->uid, $user);
             }
 
             $this->cache->set($cacheKey, $cachedUsers);
