@@ -575,8 +575,11 @@ final class UserBackend extends ABackend implements
         $home = false;
         switch ($this->properties[Opt::HOME_MODE]) {
         case App::HOME_STATIC:
-            $home = $this->properties[Opt::HOME_LOCATION];
-            $home = str_replace("%u", $uid, $home);
+            $location = $this->properties[Opt::HOME_LOCATION];
+            if (empty($location)) {
+                return false;
+            }
+            $home = str_replace("%u", $uid, $location);
             break;
         case App::HOME_QUERY:
             $user = $this->getUser($uid);
