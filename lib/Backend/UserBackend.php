@@ -339,7 +339,7 @@ final class UserBackend extends ABackend implements
             $password, $user->password, $user->salt
         );
 
-        if ($user->active == false) {
+        if ($user->active !== null && !$user->active) {
             $this->logger->info(
                 "User account is inactive for user: $uid",
                 ["app" => $this->appName]
