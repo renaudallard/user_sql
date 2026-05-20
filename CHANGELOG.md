@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Table and column autocomplete broke when the typed phrase contained regex metacharacters
 - Login rejected as inactive when the user table has no `active` column (the README documents the default as true)
 - Repeated database hits in `userExists` for unknown UIDs; `getUser` now caches negative lookups like `GroupBackend::getGroup` already does
+- SSHA salt extraction used `substr(..., -0)` on no-salt hashes which returns the full string on PHP 8 instead of an empty salt
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23
