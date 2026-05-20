@@ -259,7 +259,7 @@ class Properties implements \ArrayAccess
     public function offsetUnset(mixed $offset):void
     {
         if ($offset == Opt::SAFE_STORE) {
-            $this->safeStore = App::FALSE_VALUE;
+            $this->safeStore = false;
         }
 
         if ($this->isSystemValue($offset)) {

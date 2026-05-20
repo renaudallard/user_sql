@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - TypeError in `EmailSync` and `NameSync` when the Nextcloud user account was not yet provisioned
 - `Extended DES (Crypt)` now actually produces Extended DES hashes; the missing leading `_` made `crypt()` silently fall back to Standard DES. Existing hashes still verify.
 - PHP 8.1+ deprecation passing a null salt to `hash_hmac` in the Hash HMAC algorithm
+- `Properties::offsetUnset` assigned a string to the bool `safeStore` field, leaking the wrong type into subsequent `isSystemValue` checks
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23
