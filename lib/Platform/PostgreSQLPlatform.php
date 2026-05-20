@@ -45,7 +45,7 @@ class PostgreSQLPlatform extends AbstractPlatform
      */
     protected function getViewName($row, $schema)
     {
-        $schema ? ($row["schemaname"] . "." . $row["viewname"])
+        return $schema ? ($row["schemaname"] . "." . $row["viewname"])
             : $row["viewname"];
     }
 
@@ -54,7 +54,7 @@ class PostgreSQLPlatform extends AbstractPlatform
      */
     protected function getTableName($row, $schema)
     {
-        $schema ? ($row["schema_name"] . "." . $row["table_name"])
+        return $schema ? ($row["schema_name"] . "." . $row["table_name"])
             : $row["table_name"];
     }
 

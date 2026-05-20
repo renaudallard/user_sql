@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - 500 error on every routed request under Nextcloud 32: `appinfo/routes.php` now returns the route array instead of calling the removed `App::registerRoutes()`
 - TypeError in `UserBackend::getDisplayName()` returning `false` from a `: string`-typed method
 - TypeError in `UserBackend::canChangeAvatar()` returning a non-bool
+- PostgreSQL table and view autocomplete returning only nulls (`getTableName`/`getViewName` were missing their `return`)
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23
