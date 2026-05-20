@@ -69,7 +69,7 @@ abstract class AbstractPlatform
         $result = $this->connection->executeQuery($queryTables);
         while ($row = $result->fetch()) {
             $name = $this->getTableName($row, $schemaPrefix);
-            if (preg_match("/.*$phrase.*/i", $name)) {
+            if ($phrase === "" || stripos($name, $phrase) !== false) {
                 $tables[] = $name;
             }
         }
@@ -77,7 +77,7 @@ abstract class AbstractPlatform
         $result = $this->connection->executeQuery($queryViews);
         while ($row = $result->fetch()) {
             $name = $this->getViewName($row, $schemaPrefix);
-            if (preg_match("/.*$phrase.*/i", $name)) {
+            if ($phrase === "" || stripos($name, $phrase) !== false) {
                 $tables[] = $name;
             }
         }
@@ -124,7 +124,7 @@ abstract class AbstractPlatform
 
         while ($row = $result->fetch()) {
             $name = $this->getColumnName($row);
-            if (preg_match("/.*$phrase.*/i", $name)) {
+            if ($phrase === "" || stripos($name, $phrase) !== false) {
                 $columns[] = $name;
             }
         }

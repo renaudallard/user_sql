@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Properties::offsetUnset` assigned a string to the bool `safeStore` field, leaking the wrong type into subsequent `isSystemValue` checks
 - Crypto integer parameter validation accepted arbitrary non-numeric strings, which later crashed password verification
 - `UserRepository::save` returned only the last update's status when multiple fields were saved
+- Table and column autocomplete broke when the typed phrase contained regex metacharacters
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23
