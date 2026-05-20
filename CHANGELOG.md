@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.7.4]
+### Fixed
+- Fatal TypeError on PHP 8.4 when verifying a password with the `MD5(MD5+Salt)`, `MyBB` or `Redmine` algorithm and a null salt; `AbstractAlgorithm::checkPassword` now bails out cleanly if `getPasswordHash` does not return a string
+
 ## [4.7.3]
 ### Fixed
 - PostgreSQL table and view autocomplete returning only nulls (`getTableName`/`getViewName` were missing their `return`)
