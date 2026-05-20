@@ -67,7 +67,7 @@ abstract class AbstractPlatform
         $tables = array();
 
         $result = $this->connection->executeQuery($queryTables);
-        while ($row = $result->fetch()) {
+        while ($row = $result->fetchAssociative()) {
             $name = $this->getTableName($row, $schemaPrefix);
             if ($phrase === "" || stripos($name, $phrase) !== false) {
                 $tables[] = $name;
@@ -75,7 +75,7 @@ abstract class AbstractPlatform
         }
 
         $result = $this->connection->executeQuery($queryViews);
-        while ($row = $result->fetch()) {
+        while ($row = $result->fetchAssociative()) {
             $name = $this->getViewName($row, $schemaPrefix);
             if ($phrase === "" || stripos($name, $phrase) !== false) {
                 $tables[] = $name;
@@ -122,7 +122,7 @@ abstract class AbstractPlatform
 
         $columns = array();
 
-        while ($row = $result->fetch()) {
+        while ($row = $result->fetchAssociative()) {
             $name = $this->getColumnName($row);
             if ($phrase === "" || stripos($name, $phrase) !== false) {
                 $columns[] = $name;

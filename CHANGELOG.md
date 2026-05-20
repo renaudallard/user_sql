@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Uninitialized string offset warning in `Phpass::crypt` when the stored hash was shorter than 12 characters
 - `PlatformFactory` no longer relies on `Driver::getName()`, which was removed in Doctrine DBAL 4; the driver is now read from the connection parameters
 - Fatal `Class "OCP\User\LazyUser" not found` in `GroupBackend::searchInGroup`; the class lives in the private `OC\User` namespace in Nextcloud 30-32
+- 500 error from the admin settings autocomplete: `Doctrine\DBAL\Result::fetch()` was removed in DBAL 3 (shipped by Nextcloud 30+); switched to `fetchAssociative()`
 
 ## [4.7.3]
 ### Fixed
