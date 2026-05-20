@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Saving the admin settings wiped database credentials on every request because the SAFE_STORE comparison mixed a string from the form with a bool from properties
 - PHP 8.4 deprecation in `GroupBackend::isAdmin()` caused by the implicit nullable `string $uid = null` signature
 - PHP 8.1+ deprecation and bogus empty home path when `Home mode` is `Static` but `Home location` is empty
+- TypeError in `getDisplayNames` when the user list was already cached from a previous `getUsers` call without a callback
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23

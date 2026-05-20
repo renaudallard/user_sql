@@ -455,38 +455,35 @@ final class UserBackend extends ABackend implements
 
         $cacheKey = self::class . "users_" . $search . "_" . $limit . "_"
             . $offset;
-        $users = $this->cache->get($cacheKey);
+        $cachedUsers = $this->cache->get($cacheKey);
 
-        if (!is_null($users)) {
-            $this->logger->debug(
-                "Returning from cache getUsers($search, $limit, $offset): count("
-                . count($users) . ")", ["app" => $this->appName]
+        if (is_null($cachedUsers)) {
+            $cachedUsers = $this->userRepository->findAllBySearchTerm(
+                "%" . $search . "%", $limit, $offset
             );
-            // convert to user-model
-            foreach ($users as $index => $cachedUser) {
-              if (!is_array($cachedUser)) {
-                break;
-              }
-              $user = new User();
-              foreach ($cachedUser as $key => $value) {
-                $user->{$key} = $value;
-              }
-              $users[$index] = $user;
+
+            if ($cachedUsers === false) {
+                return [];
             }
 
-            return $users;
+            foreach ($cachedUsers as $user) {
+                $this->cache->set("user_" . $user->uid, $user);
+            }
+
+            $this->cache->set($cacheKey, $cachedUsers);
         }
 
-        $users = $this->userRepository->findAllBySearchTerm(
-            "%" . $search . "%", $limit, $offset
-        );
-
-        if ($users === false) {
-            return [];
-        }
-
-        foreach ($users as $user) {
-            $this->cache->set("user_" . $user->uid, $user);
+        $users = [];
+        foreach ($cachedUsers as $cachedUser) {
+            if ($cachedUser instanceof User) {
+                $users[] = $cachedUser;
+            } else {
+                $user = new User();
+                foreach ($cachedUser as $key => $value) {
+                    $user->{$key} = $value;
+                }
+                $users[] = $user;
+            }
         }
 
         $callback = is_callable($callback)
@@ -496,7 +493,6 @@ final class UserBackend extends ABackend implements
             };
         $users = array_map($callback, $users);
 
-        $this->cache->set($cacheKey, $users);
         $this->logger->debug(
             "Returning getUsers($search, $limit, $offset): count("
             . count(
