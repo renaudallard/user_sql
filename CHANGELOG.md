@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - PHP 8.1+ deprecation and bogus empty home path when `Home mode` is `Static` but `Home location` is empty
 - TypeError in `getDisplayNames` when the user list was already cached from a previous `getUsers` call without a callback
 - TypeError in `EmailSync` and `NameSync` when the Nextcloud user account was not yet provisioned
+- `Extended DES (Crypt)` now actually produces Extended DES hashes; the missing leading `_` made `crypt()` silently fall back to Standard DES. Existing hashes still verify.
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23

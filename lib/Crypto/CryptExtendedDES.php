@@ -62,7 +62,7 @@ class CryptExtendedDES extends AbstractCrypt
      */
     protected function getSalt()
     {
-        return self::encodeIterationCount($this->iterationCount)
+        return "_" . self::encodeIterationCount($this->iterationCount)
             . Utils::randomString(4, self::SALT_ALPHABET);
     }
 
