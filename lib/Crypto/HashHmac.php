@@ -56,7 +56,7 @@ class HashHmac extends AbstractAlgorithm
      */
     public function getPasswordHash($password, $salt = null)
     {
-        return hash_hmac($this->hashingAlgorithm, $password, $salt);
+        return hash_hmac($this->hashingAlgorithm, (string)$password, (string)$salt);
     }
 
     /**
