@@ -4,16 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [4.7.2]
-### Changed
-- Support for Nextcloud 30, 31, 32; drop Nextcloud 25-29
-- Minimum PHP version raised to 8.1 (Nextcloud 30+ requirement)
-- App bootstrap moved from `appinfo/app.php` to `IBootstrap`
+## [4.7.3]
 ### Fixed
-- Silent login failure on Nextcloud 30+ caused by the removal of `OCP\ILogger`; migrated to `Psr\Log\LoggerInterface`
-- 500 error on every routed request under Nextcloud 32: `appinfo/routes.php` now returns the route array instead of calling the removed `App::registerRoutes()`
-- TypeError in `UserBackend::getDisplayName()` returning `false` from a `: string`-typed method
-- TypeError in `UserBackend::canChangeAvatar()` returning a non-bool
 - PostgreSQL table and view autocomplete returning only nulls (`getTableName`/`getViewName` were missing their `return`)
 - Saving the admin settings wiped database credentials on every request because the SAFE_STORE comparison mixed a string from the form with a bool from properties
 - PHP 8.4 deprecation in `GroupBackend::isAdmin()` caused by the implicit nullable `string $uid = null` signature
@@ -30,6 +22,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Repeated database hits in `userExists` for unknown UIDs; `getUser` now caches negative lookups like `GroupBackend::getGroup` already does
 - SSHA salt extraction used `substr(..., -0)` on no-salt hashes which returns the full string on PHP 8 instead of an empty salt
 - Dangling reference to the removed `Doctrine\DBAL\DBALException` in two `use` statements, aliased to `Doctrine\DBAL\Exception` like the rest of the code
+
+## [4.7.2]
+### Changed
+- Support for Nextcloud 30, 31, 32; drop Nextcloud 25-29
+- Minimum PHP version raised to 8.1 (Nextcloud 30+ requirement)
+- App bootstrap moved from `appinfo/app.php` to `IBootstrap`
+### Fixed
+- Silent login failure on Nextcloud 30+ caused by the removal of `OCP\ILogger`; migrated to `Psr\Log\LoggerInterface`
+- 500 error on every routed request under Nextcloud 32: `appinfo/routes.php` now returns the route array instead of calling the removed `App::registerRoutes()`
+- TypeError in `UserBackend::getDisplayName()` returning `false` from a `: string`-typed method
+- TypeError in `UserBackend::canChangeAvatar()` returning a non-bool
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23
