@@ -21,7 +21,7 @@
 
 namespace OCA\UserSQL\Controller;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use OC\DatabaseException;
 use OC\DB\Connection;
