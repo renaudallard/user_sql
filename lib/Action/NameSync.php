@@ -107,7 +107,10 @@ class NameSync implements IUserAction
                 $this->config->setUserValue(
                     $user->uid, "settings", "displayName", $user->name
                 );
-                $this->userManager->get($user->uid)->setDisplayName($user->name);
+                $ncUser = $this->userManager->get($user->uid);
+                if ($ncUser !== null) {
+                    $ncUser->setDisplayName($user->name);
+                }
             }
 
             $result = true;
@@ -129,7 +132,10 @@ class NameSync implements IUserAction
                 $this->config->setUserValue(
                     $user->uid, "settings", "displayName", $user->name
                 );
-                $this->userManager->get($user->uid)->setDisplayName($user->name);
+                $ncUser = $this->userManager->get($user->uid);
+                if ($ncUser !== null) {
+                    $ncUser->setDisplayName($user->name);
+                }
             }
 
             $result = true;

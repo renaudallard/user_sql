@@ -107,7 +107,10 @@ class EmailSync implements IUserAction
                 $this->config->setUserValue(
                     $user->uid, "settings", "email", $user->email
                 );
-                $this->userManager->get($user->uid)->setEMailAddress($user->email);
+                $ncUser = $this->userManager->get($user->uid);
+                if ($ncUser !== null) {
+                    $ncUser->setEMailAddress($user->email);
+                }
             }
 
             $result = true;
@@ -129,7 +132,10 @@ class EmailSync implements IUserAction
                 $this->config->setUserValue(
                     $user->uid, "settings", "email", $user->email
                 );
-                $this->userManager->get($user->uid)->setEMailAddress($user->email);
+                $ncUser = $this->userManager->get($user->uid);
+                if ($ncUser !== null) {
+                    $ncUser->setEMailAddress($user->email);
+                }
             }
 
             $result = true;
