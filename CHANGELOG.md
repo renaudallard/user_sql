@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - TypeError in `UserBackend::getDisplayName()` returning `false` from a `: string`-typed method
 - TypeError in `UserBackend::canChangeAvatar()` returning a non-bool
 - PostgreSQL table and view autocomplete returning only nulls (`getTableName`/`getViewName` were missing their `return`)
+- Saving the admin settings wiped database credentials on every request because the SAFE_STORE comparison mixed a string from the form with a bool from properties
 
 ## [4.7.1]
 - Support for Nextcloud 22, 23

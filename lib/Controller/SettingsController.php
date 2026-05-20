@@ -236,8 +236,8 @@ class SettingsController extends Controller
             ];
         }
 
-        $safeStore = $this->request->getParam(str_replace(".", "-", Opt::SAFE_STORE), App::FALSE_VALUE);
-        if ($safeStore !== $this->properties[Opt::SAFE_STORE]) {
+        $safeStoreReq = $this->request->getParam(str_replace(".", "-", Opt::SAFE_STORE), App::FALSE_VALUE) === App::TRUE_VALUE;
+        if ($safeStoreReq !== (bool)$this->properties[Opt::SAFE_STORE]) {
             unset($this->properties[DB::HOSTNAME]);
             unset($this->properties[DB::PASSWORD]);
             unset($this->properties[DB::USERNAME]);
@@ -245,7 +245,7 @@ class SettingsController extends Controller
             unset($this->properties[DB::SSL_CA]);
             unset($this->properties[DB::SSL_CERT]);
             unset($this->properties[DB::SSL_KEY]);
-            $this->properties[Opt::SAFE_STORE] = $safeStore;
+            $this->properties[Opt::SAFE_STORE] = $safeStoreReq ? App::TRUE_VALUE : App::FALSE_VALUE;
         }
 
         foreach ($properties as $key => $value) {
