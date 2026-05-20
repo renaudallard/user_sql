@@ -160,7 +160,7 @@ class UserRepository
         $status = true;
 
         if ($fields & self::DISPLAY_NAME_FIELD) {
-            $status =& $this->dataQuery->update(
+            $status = $status && $this->dataQuery->update(
                 Query::UPDATE_DISPLAY_NAME, [
                     Query::NAME_PARAM => $user->name,
                     Query::UID_PARAM => $user->uid
@@ -168,7 +168,7 @@ class UserRepository
             );
         }
         if ($fields & self::PASSWORD_FIELD) {
-            $status =& $this->dataQuery->update(
+            $status = $status && $this->dataQuery->update(
                 Query::UPDATE_PASSWORD, [
                     Query::PASSWORD_PARAM => $user->password,
                     Query::UID_PARAM => $user->uid
@@ -176,7 +176,7 @@ class UserRepository
             );
         }
         if ($fields & self::EMAIL_FIELD) {
-            $status =& $this->dataQuery->update(
+            $status = $status && $this->dataQuery->update(
                 Query::UPDATE_EMAIL, [
                     Query::EMAIL_PARAM => $user->email,
                     Query::UID_PARAM => $user->uid
@@ -184,7 +184,7 @@ class UserRepository
             );
         }
         if ($fields & self::QUOTA_FIELD) {
-            $status =& $this->dataQuery->update(
+            $status = $status && $this->dataQuery->update(
                 Query::UPDATE_QUOTA, [
                     Query::QUOTA_PARAM => $user->quota,
                     Query::UID_PARAM => $user->uid
