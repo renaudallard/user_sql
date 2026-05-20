@@ -64,8 +64,11 @@ class Phpass extends AbstractAlgorithm
      */
     protected function crypt($password, $setting)
     {
+        if (strlen($setting) < 12) {
+            return null;
+        }
         $countLog2 = strpos(self::ITOA64, $setting[3]);
-        if ($countLog2 < 7 || $countLog2 > 30) {
+        if ($countLog2 === false || $countLog2 < 7 || $countLog2 > 30) {
             return null;
         }
 
