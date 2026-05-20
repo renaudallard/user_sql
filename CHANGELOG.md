@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - PHP 8.1+ deprecation in `Drupal7::crypt` when the parent returned null for a malformed setting
 - Uninitialized string offset warning in `Phpass::crypt` when the stored hash was shorter than 12 characters
 - `PlatformFactory` no longer relies on `Driver::getName()`, which was removed in Doctrine DBAL 4; the driver is now read from the connection parameters
+- Fatal `Class "OCP\User\LazyUser" not found` in `GroupBackend::searchInGroup`; the class lives in the private `OC\User` namespace in Nextcloud 30-32
 
 ## [4.7.3]
 ### Fixed

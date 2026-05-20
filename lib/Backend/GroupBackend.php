@@ -33,7 +33,7 @@ use OCP\Group\Backend\IGroupDetailsBackend;
 use OCP\Group\Backend\IIsAdminBackend;
 use OCP\Group\Backend\ISearchableGroupBackend;
 use OCP\IUserManager;
-use OCP\User\LazyUser;
+use OC\User\LazyUser;
 use Psr\Log\LoggerInterface;
 
 /**
